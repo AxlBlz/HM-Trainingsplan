@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="HM Training">
+<meta name="theme-color" content="#0a0a0f">
+<link rel="manifest" href="manifest.json">
+<title>HM Training</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0a0f;--bg2:#141420;--bg3:#1a1a28;--bd:#1e1e2e;--bd2:#2a2a3a;--or:#f97316;--or2:#ea580c;--bl:#60a5fa;--gr:#4ade80;--yw:#fbbf24;--rd:#f43f5e;--t:#e2e8f0;--t2:#94a3b8;--t3:#64748b;--t4:#475569;--st:env(safe-area-inset-top,0px);--sb:env(safe-area-inset-bottom,0px);--th:calc(60px + var(--sb))}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:var(--bg);color:var(--t);font-family:"JetBrains Mono",monospace;overflow:hidden}
+#app{display:flex;flex-direction:column;height:100%}
+#hdr{background:#0f0f1a;border-bottom:1px solid var(--bd);padding:calc(var(--st) + 10px) 16px 10px;flex-shrink:0}
+#cnt{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:var(--th)}
+#tbar{position:fixed;bottom:0;left:0;right:0;background:rgba(10,10,15,.96);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--bd);display:flex;height:var(--th);padding-bottom:var(--sb);z-index:100}
+.htitle{display:flex;align-items:center;gap:8px}.htitle h1{font-family:"Syne",sans-serif;font-size:16px;font-weight:800;color:#fff;letter-spacing:-.5px}
+.badge{font-size:9px;color:var(--or);background:rgba(249,115,22,.12);padding:2px 7px;border-radius:20px;border:1px solid rgba(249,115,22,.25)}
+.hsub{font-size:9px;color:var(--t3);letter-spacing:1px;margin-top:2px}
+.tb{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:none;border:none;color:var(--t4);cursor:pointer;font-family:"Syne",sans-serif;font-size:8px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding-top:8px}
+.tb.on{color:var(--or)}.tbi{font-size:19px;line-height:1}
+.pg{display:none;padding:12px}.pg.on{display:block;animation:fu .2s ease}
+@keyframes fu{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.sbar{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--bd);border-radius:10px;overflow:hidden;margin-bottom:11px}
+.sv{background:var(--bg2);padding:9px 4px;text-align:center}
+.svv{font-family:"Syne",sans-serif;font-size:15px;font-weight:700;color:var(--or)}
+.svl{font-size:7px;color:var(--t4);letter-spacing:1px;margin-top:1px}
+.zbar{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;background:var(--bg2);border-radius:9px;padding:7px 10px;margin-bottom:11px;border:1px solid var(--bd)}
+.zp{font-size:10px}
+.pbanner{background:rgba(74,222,128,.05);border:1px solid rgba(74,222,128,.2);border-radius:9px;padding:9px 12px;margin-bottom:11px;display:flex;justify-content:space-between;align-items:center}
+.rc{background:var(--bg2);border:1px solid var(--bd);border-radius:11px;padding:11px 12px;margin-bottom:7px;border-left:3px solid var(--or);position:relative}
+.rh{display:flex;align-items:center;gap:6px;margin-bottom:6px;flex-wrap:wrap}
+.rd{font-size:10px;color:var(--t2)}
+.rbdg{font-size:9px;font-weight:600;padding:2px 7px;border-radius:4px}
+.rhf{font-size:9px;color:var(--bl);background:rgba(96,165,250,.1);padding:2px 6px;border-radius:4px;border:1px solid rgba(96,165,250,.2)}
+.rs{display:flex;gap:12px;font-size:12px;flex-wrap:wrap}
+.rl{color:var(--t4);font-size:10px}.rv{color:#fff;font-weight:500}.rp{color:var(--or);font-weight:600}
+.rnt{margin-top:5px;font-size:10px;color:var(--t3);font-style:italic}
+.rdl{position:absolute;top:9px;right:9px;background:none;border:none;color:var(--bd2);font-size:17px;cursor:pointer;padding:3px}
+.stl{font-family:"Syne",sans-serif;font-size:10px;font-weight:700;color:var(--t3);letter-spacing:2px;text-transform:uppercase;margin-bottom:9px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:11px}
+.g4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:7px;margin-bottom:11px}
+.fg label{display:block;font-size:8px;color:var(--t3);letter-spacing:1px;margin-bottom:4px}
+.fg input,.fg select,.fg textarea{background:var(--bg3);border:1px solid var(--bd2);color:var(--t);border-radius:8px;padding:10px 11px;font-family:"JetBrains Mono",monospace;font-size:13px;width:100%;outline:none;transition:border-color .2s;-webkit-appearance:none}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--or)}
+.fg select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2364748b' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 11px center;padding-right:28px}
+select option{background:var(--bg3)}
+.bp{width:100%;padding:13px;border-radius:11px;background:linear-gradient(135deg,var(--or),var(--or2));color:#fff;border:none;font-family:"Syne",sans-serif;font-weight:700;font-size:13px;letter-spacing:1px;cursor:pointer}
+.bp:active{transform:scale(.98)}
+.bsv{background:rgba(74,222,128,.1)!important;color:var(--gr)!important;border:1px solid rgba(74,222,128,.3)!important}
+.bs{width:100%;padding:11px;border-radius:9px;background:var(--bg2);border:1px solid var(--bd2);color:var(--t3);font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:1px;cursor:pointer;margin-top:9px}
+.abox{background:var(--bg2);border:1px solid var(--bd);border-left:3px solid var(--or);border-radius:11px;padding:14px;margin-bottom:11px}
+.atxt{white-space:pre-wrap;line-height:1.75;font-size:12px;color:#cbd5e1}
+.ld{text-align:center;padding:44px 20px}
+.ldic{font-size:34px;margin-bottom:12px;animation:pl 1.5s ease-in-out infinite}
+@keyframes pl{0%,100%{opacity:1}50%{opacity:.3}}
+.apibox{background:var(--bg2);border:1px solid rgba(249,115,22,.3);border-radius:11px;padding:14px;margin-bottom:12px}
+.apibox p{font-size:11px;color:var(--t3);line-height:1.6;margin-bottom:9px}
+.apibox a{color:var(--or);text-decoration:none}
+.tgl{display:flex;gap:5px;margin-bottom:11px}
+.tgb{flex:1;padding:8px 4px;border-radius:8px;border:1px solid var(--bd2);background:var(--bg2);color:var(--t3);font-family:"Syne",sans-serif;font-size:9px;font-weight:700;letter-spacing:1px;cursor:pointer;text-align:center}
+.tgb.on{background:var(--or);border-color:var(--or);color:#000}
+.rfc{background:var(--bg2);border:1px solid var(--bd);border-radius:11px;padding:12px;margin-bottom:9px}
+.rfr{display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px}
+.rfr:last-child{margin-bottom:0}
+.wk{margin-bottom:14px}
+.wkhdr{display:flex;align-items:center;gap:7px;margin-bottom:5px}
+.wknum{font-family:"Syne",sans-serif;font-size:13px;font-weight:800;color:#fff}
+.wkph{font-size:9px;letter-spacing:.5px}
+.wkcur{background:var(--or);color:#000;font-family:"Syne",sans-serif;font-size:8px;font-weight:700;padding:2px 7px;border-radius:10px;letter-spacing:.5px}
+.wkcard{background:var(--bg2);border:1px solid var(--bd);border-radius:11px;overflow:hidden}
+.wkfoc{padding:7px 11px;font-size:10px;font-style:italic;color:var(--t2);border-bottom:1px solid var(--bd)}
+.dr{display:flex;gap:8px;padding:9px 11px;border-top:1px solid rgba(255,255,255,.03);align-items:flex-start}
+.dtag{font-family:"Syne",sans-serif;font-weight:700;font-size:11px;min-width:24px;padding-top:2px}
+.dcnt{flex:1}
+.dtyp{font-size:9px;font-weight:700;padding:1px 6px;border-radius:4px;display:inline-block;margin-bottom:3px;letter-spacing:.5px}
+.ddsc{font-size:11px;color:var(--t2);line-height:1.5}
+.dmet{font-size:10px;color:var(--t3);margin-top:2px}
+.ph{padding:9px 12px;font-family:"Syne",sans-serif;font-weight:700;font-size:12px;color:#fff}
+.pw{display:flex;gap:8px;padding:7px 12px;border-top:1px solid rgba(255,255,255,.04);font-size:11px;align-items:flex-start}
+.pwn{color:var(--or);font-weight:600;min-width:30px}
+.pwc{flex:1;color:var(--t2);line-height:1.5}
+.pwk{color:var(--t3);min-width:40px;text-align:right;font-size:10px}
+.emp{text-align:center;padding:44px 20px;color:var(--t4)}
+.eic{font-size:38px;margin-bottom:10px}
+.etx{font-size:12px;line-height:1.6}
+::-webkit-scrollbar{width:2px}::-webkit-scrollbar-thumb{background:var(--or);border-radius:1px}
+</style>
+</head>
+<body>
+<div id="app">
+<div id="hdr">
+  <div class="htitle"><span style="font-size:18px">🏃</span><h1>TRAININGSLOG</h1><span class="badge">HM SEP 2026</span></div>
+  <div class="hsub">ZIEL 1:30:00 · 4:15/KM · HFMAX 193 · PB 1:37:57</div>
+</div>
+<div id="cnt">
+
+<div class="pg on" id="pg-log">
+  <div class="sbar" id="sbar"></div>
+  <div class="zbar">
+    <span class="zp"><b style="color:#4ade80">Z1</b> <span style="color:#475569">&lt;116</span></span>
+    <span class="zp"><b style="color:#60a5fa">Z2</b> <span style="color:#475569">116–135</span></span>
+    <span class="zp"><b style="color:#fbbf24">Z3</b> <span style="color:#475569">136–154</span></span>
+    <span class="zp"><b style="color:#f97316">Z4</b> <span style="color:#475569">155–174</span></span>
+    <span class="zp"><b style="color:#f43f5e">Z5</b> <span style="color:#475569">175–193</span></span>
+  </div>
+  <div id="pbanner"></div>
+  <div id="rlist"></div>
+  <button class="bp" onclick="startAI()" style="margin-top:10px">⚡ KI-ANALYSE STARTEN</button>
+</div>
+
+<div class="pg" id="pg-add">
+  <div class="stl">Neue Einheit</div>
+  <div class="g2">
+    <div class="fg"><label>DATUM</label><input type="date" id="fd"></div>
+    <div class="fg"><label>TYP</label><select id="ft"><option>Z2 Easy Run</option><option>Z3 Tempodauerlauf</option><option>Z4 Intervalle</option><option>Langer Lauf</option><option>Z1 Regeneration</option><option>Testlauf</option><option>Wettkampf</option></select></div>
+  </div>
+  <div class="g4">
+    <div class="fg"><label>KM</label><input type="number" step="0.1" placeholder="10.5" id="fk"></div>
+    <div class="fg"><label>PACE</label><input type="text" placeholder="5:30" id="fp"></div>
+    <div class="fg"><label>Ø HF</label><input type="number" placeholder="135" id="fh"></div>
+    <div class="fg"><label>RPE</label><input type="number" min="1" max="10" placeholder="5" id="fr"></div>
+  </div>
+  <div class="fg" style="margin-bottom:11px"><label>NOTIZEN</label><textarea rows="2" placeholder="Wie hat es sich angefühlt?" id="fn" style="resize:vertical"></textarea></div>
+  <button class="bp" id="bsv" onclick="saveRun()">TRAINING SPEICHERN</button>
+  <div style="height:14px"></div>
+  <div class="stl">Referenz</div>
+  <div class="rfc">
+    <div style="font-size:9px;color:var(--t4);letter-spacing:1px;margin-bottom:7px">HF-ZONEN (193 bpm)</div>
+    <div class="rfr"><span style="color:#4ade80">Z1</span><span>&lt;116 bpm</span></div>
+    <div class="rfr"><span style="color:#60a5fa">Z2</span><span>116–135 bpm</span></div>
+    <div class="rfr"><span style="color:#fbbf24">Z3</span><span>136–154 bpm</span></div>
+    <div class="rfr"><span style="color:#f97316">Z4</span><span>155–174 bpm</span></div>
+    <div class="rfr"><span style="color:#f43f5e">Z5</span><span>175–193 bpm</span></div>
+  </div>
+  <div class="rfc" style="border-color:rgba(249,115,22,.3)">
+    <div style="font-size:9px;color:var(--or);letter-spacing:1px;margin-bottom:7px">🏆 PB 2018</div>
+    <div class="rfr"><span style="color:var(--t3)">Zeit</span><span>1:37:57</span></div>
+    <div class="rfr"><span style="color:var(--t3)">Pace</span><span>4:37/km</span></div>
+    <div class="rfr"><span style="color:var(--t3)">Ø HF</span><span>177 bpm</span></div>
+    <div class="rfr"><span style="color:var(--t3)">Max HF</span><span>198 bpm</span></div>
+    <div style="font-size:10px;color:var(--t3);margin-top:5px;font-style:italic">Ziel 2026: −7:57 → 1:30:00</div>
+  </div>
+</div>
+
+<div class="pg" id="pg-ai">
+  <div class="stl">KI-Trainingsanalyse</div>
+  <div id="apikey"></div>
+  <div id="aicnt"><div class="emp"><div class="eic">🧠</div><div class="etx">Klick auf "KI-Analyse starten" im Log.</div></div></div>
+</div>
+
+<div class="pg" id="pg-plan">
+  <div class="tgl">
+    <button class="tgb on" id="tg-w" onclick="showPlan('w')">WOCHEN</button>
+    <button class="tgb" id="tg-o" onclick="showPlan('o')">ÜBERSICHT</button>
+    <button class="tgb" id="tg-r" onclick="showPlan('r')">RENNTAG</button>
+  </div>
+  <div id="plan-w"></div>
+  <div id="plan-o" style="display:none"></div>
+  <div id="plan-r" style="display:none"></div>
+</div>
+
+</div>
+<div id="tbar">
+  <button class="tb on" id="tb-log" onclick="go('log')"><span class="tbi">📋</span><span>LOG</span></button>
+  <button class="tb" id="tb-add" onclick="go('add')"><span class="tbi">＋</span><span>EINTRAG</span></button>
+  <button class="tb" id="tb-ai" onclick="go('ai')"><span class="tbi">⚡</span><span>ANALYSE</span></button>
+  <button class="tb" id="tb-plan" onclick="go('plan')"><span class="tbi">🗓</span><span>PLAN</span></button>
+</div>
+</div>
+<script>
+
+const ALL_WEEKS = [
+  {
+    week:1, phase:"PHASE 1", focus:"4 × 6 min Z3",
+    days:[
+      {tag:"Mo",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"Di",typ:"Z2",col:"#1D4ED8",bg:"#DBEAFE",desc:"Easy Run: 10 km @ Z2. Wirklich locker – auch wenn 6:20/km nötig!",pace:"5:45–6:10/km",hf:"116–135 bpm"},
+      {tag:"Mi",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag oder Mobility",pace:"–",hf:"–"},
+      {tag:"Do",typ:"Z3",col:"#854D0E",bg:"#FEF9C3",desc:"Qualität: 2 km aufwärmen, 4 × 6 min @ Z3 (4:55–5:05/km), 2 min Trabpause, 2 km auslaufen",pace:"4:55–5:05/km",hf:"136–154 bpm"},
+      {tag:"Fr",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"Sa",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Optional: 20 min lockeres Gehen",pace:"–",hf:"–"},
+      {tag:"So",typ:"LONG",col:"#1D4ED8",bg:"#DBEAFE",desc:"Langer Lauf: 16 km @ Z2. HF unter 135 bpm halten.",pace:"6:00–6:30/km",hf:"116–135 bpm"},
+    ]
+  },
+  {
+    week:2, phase:"PHASE 1", focus:"5 × 6 min Z3",
+    days:[
+      {tag:"Mo",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"Di",typ:"Z2",col:"#1D4ED8",bg:"#DBEAFE",desc:"Easy Run: 12 km @ Z2.",pace:"5:45–6:10/km",hf:"116–135 bpm"},
+      {tag:"Mi",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag oder Yoga",pace:"–",hf:"–"},
+      {tag:"Do",typ:"Z3",col:"#854D0E",bg:"#FEF9C3",desc:"Qualität: 2 km aufwärmen, 5 × 6 min @ Z3 (4:55–5:05/km), 2 min Trabpause, 2 km auslaufen",pace:"4:55–5:05/km",hf:"136–154 bpm"},
+      {tag:"Fr",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"Sa",typ:"Z1",col:"#065F46",bg:"#D1FAE5",desc:"Optional: 6–8 km sehr locker @ Z1",pace:"6:30–7:00/km",hf:"<116 bpm"},
+      {tag:"So",typ:"LONG",col:"#1D4ED8",bg:"#DBEAFE",desc:"Langer Lauf: 18 km @ Z2.",pace:"6:00–6:30/km",hf:"116–135 bpm"},
+    ]
+  },
+  {
+    week:3, phase:"PHASE 1", focus:"20 min Z3 kontinuierlich",
+    days:[
+      {tag:"Mo",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"Di",typ:"Z2",col:"#1D4ED8",bg:"#DBEAFE",desc:"Easy Run: 10 km @ Z2.",pace:"5:45–6:10/km",hf:"116–135 bpm"},
+      {tag:"Mi",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag oder Kraft",pace:"–",hf:"–"},
+      {tag:"Do",typ:"Z3",col:"#854D0E",bg:"#FEF9C3",desc:"20 min DURCHGEHEND @ Z3. Kernpace 4:55–5:05/km. HF 150–158 bpm. 2 km auf/ab.",pace:"4:55–5:05/km",hf:"150–158 bpm"},
+      {tag:"Fr",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"Sa",typ:"Z1",col:"#065F46",bg:"#D1FAE5",desc:"Optional: 6 km @ Z1 locker",pace:"6:30–7:00/km",hf:"<116 bpm"},
+      {tag:"So",typ:"LONG",col:"#1D4ED8",bg:"#DBEAFE",desc:"Langer Lauf: 20 km @ Z2. Gel nach 60 min testen!",pace:"6:00–6:30/km",hf:"116–135 bpm"},
+    ]
+  },
+  {
+    week:4, phase:"🔄 REGEN", focus:"Regenerationswoche",
+    days:[
+      {tag:"Mo",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"Di",typ:"Z2",col:"#1D4ED8",bg:"#DBEAFE",desc:"Easy Run: 8 km sehr locker. HF max. 128 bpm!",pace:"6:10–6:40/km",hf:"<128 bpm"},
+      {tag:"Mi",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"Do",typ:"Z2",col:"#1D4ED8",bg:"#DBEAFE",desc:"Easy Run: 10 km locker + 4 × 20 Sek Steigerungen",pace:"6:00–6:30/km",hf:"116–130 bpm"},
+      {tag:"Fr",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"Sa",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag – genießen!",pace:"–",hf:"–"},
+      {tag:"So",typ:"LONG",col:"#1D4ED8",bg:"#DBEAFE",desc:"Langer Lauf: nur 12 km @ Z2.",pace:"6:10–6:40/km",hf:"116–132 bpm"},
+    ]
+  },
+  {
+    week:5, phase:"PHASE 1", focus:"25 min Z3 progressiv",
+    days:[
+      {tag:"Mo",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"Di",typ:"Z2",col:"#1D4ED8",bg:"#DBEAFE",desc:"Easy Run: 12 km @ Z2.",pace:"5:45–6:10/km",hf:"116–135 bpm"},
+      {tag:"Mi",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"Do",typ:"Z3",col:"#854D0E",bg:"#FEF9C3",desc:"25 min Z3 PROGRESSIV: erste 15 min @ 5:00–5:05/km (HF 148–153), letzte 10 min @ 4:55/km (HF 153–158). 2 km auf/ab.",pace:"5:05→4:55/km",hf:"148→158 bpm"},
+      {tag:"Fr",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"Sa",typ:"Z1",col:"#065F46",bg:"#D1FAE5",desc:"Optional: 8 km @ Z1 locker",pace:"6:20–6:50/km",hf:"<116 bpm"},
+      {tag:"So",typ:"LONG",col:"#1D4ED8",bg:"#DBEAFE",desc:"Langer Lauf: 20 km @ Z2.",pace:"5:55–6:25/km",hf:"116–135 bpm"},
+    ]
+  },
+  {
+    week:6, phase:"PHASE 1", focus:"2 × 15 min Z3",
+    days:[
+      {tag:"Mo",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"Di",typ:"Z2",col:"#1D4ED8",bg:"#DBEAFE",desc:"Easy Run: 12 km @ Z2.",pace:"5:45–6:10/km",hf:"116–135 bpm"},
+      {tag:"Mi",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"Do",typ:"Z3",col:"#854D0E",bg:"#FEF9C3",desc:"2 × 15 min Z3 mit 3 min Pause. Block 1: 5:00/km @ 148–153 bpm. Block 2: 4:55/km @ 153–158 bpm. 2 km auf/ab.",pace:"5:00→4:55/km",hf:"148→158 bpm"},
+      {tag:"Fr",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"Sa",typ:"Z1",col:"#065F46",bg:"#D1FAE5",desc:"Optional: 8 km @ Z1",pace:"6:20–6:50/km",hf:"<116 bpm"},
+      {tag:"So",typ:"LONG",col:"#1D4ED8",bg:"#DBEAFE",desc:"Langer Lauf: 18 km @ Z2.",pace:"5:50–6:20/km",hf:"116–135 bpm"},
+    ]
+  },
+  {
+    week:7, phase:"PHASE 2", focus:"5 × 1km @ 4:20–4:25/km",
+    days:[
+      {tag:"Mo",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"Di",typ:"Z2",col:"#1D4ED8",bg:"#DBEAFE",desc:"Easy Run: 10 km @ Z2.",pace:"5:55–6:20/km",hf:"116–135 bpm"},
+      {tag:"Mi",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"Do",typ:"Z4",col:"#9A3412",bg:"#FFEDD5",desc:"Intervalle: 2 km aufwärmen, 5 × 1km @ 4:20–4:25/km (Z4), 90 Sek Pause, 2 km auslaufen.",pace:"4:20–4:25/km",hf:"155–174 bpm"},
+      {tag:"Fr",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"Sa",typ:"Z2",col:"#1D4ED8",bg:"#DBEAFE",desc:"Easy Run: 10 km @ Z2.",pace:"5:55–6:20/km",hf:"116–135 bpm"},
+      {tag:"So",typ:"LONG",col:"#1D4ED8",bg:"#DBEAFE",desc:"Langer Lauf: 18 km – 14 km @ Z2, letzte 4 km @ 4:20/km WP.",pace:"6:00→4:20/km",hf:"bis 165 bpm"},
+    ]
+  },
+  {
+    week:8, phase:"PHASE 2", focus:"5 × 1km @ 4:20/km",
+    days:[
+      {tag:"Mo",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"Di",typ:"Z2",col:"#1D4ED8",bg:"#DBEAFE",desc:"Easy Run: 10 km @ Z2.",pace:"5:50–6:20/km",hf:"116–135 bpm"},
+      {tag:"Mi",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"Do",typ:"Z4",col:"#9A3412",bg:"#FFEDD5",desc:"Intervalle: 2 km aufwärmen, 5 × 1km @ 4:20/km, 75 Sek Pause, 2 km auslaufen.",pace:"4:20/km",hf:"155–174 bpm"},
+      {tag:"Fr",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"Sa",typ:"Z2",col:"#1D4ED8",bg:"#DBEAFE",desc:"Easy Run: 10 km @ Z2.",pace:"5:50–6:15/km",hf:"116–135 bpm"},
+      {tag:"So",typ:"LONG",col:"#1D4ED8",bg:"#DBEAFE",desc:"Langer Lauf: 18 km – 13 km @ Z2, letzte 5 km @ 4:20/km.",pace:"6:00→4:20/km",hf:"bis 168 bpm"},
+    ]
+  },
+  {
+    week:9, phase:"PHASE 2", focus:"6 × 1km @ 4:15/km",
+    days:[
+      {tag:"Mo",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"Di",typ:"Z2",col:"#1D4ED8",bg:"#DBEAFE",desc:"Easy Run: 12 km @ Z2.",pace:"5:45–6:15/km",hf:"116–135 bpm"},
+      {tag:"Mi",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"Do",typ:"Z4",col:"#9A3412",bg:"#FFEDD5",desc:"Intervalle: 2 km aufwärmen, 6 × 1km @ 4:15/km, 90 Sek Pause, 2 km auslaufen. ERSTE WP-PACE!",pace:"4:15/km",hf:"155–174 bpm"},
+      {tag:"Fr",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"Sa",typ:"Z2",col:"#1D4ED8",bg:"#DBEAFE",desc:"Easy Run: 10 km @ Z2.",pace:"5:45–6:10/km",hf:"116–135 bpm"},
+      {tag:"So",typ:"LONG",col:"#1D4ED8",bg:"#DBEAFE",desc:"Langer Lauf: 18 km – 12 km @ Z2, letzte 6 km @ 4:15/km!",pace:"6:00→4:15/km",hf:"bis 170 bpm"},
+    ]
+  },
+  {
+    week:10, phase:"PHASE 2", focus:"6 × 1km @ 4:15/km",
+    days:[
+      {tag:"Mo",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"Di",typ:"Z2",col:"#1D4ED8",bg:"#DBEAFE",desc:"Easy Run: 12 km @ Z2.",pace:"5:45–6:10/km",hf:"116–135 bpm"},
+      {tag:"Mi",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"Do",typ:"Z4",col:"#9A3412",bg:"#FFEDD5",desc:"Intervalle: 2 km aufwärmen, 6 × 1km @ 4:15/km, 75 Sek Pause, 2 km auslaufen.",pace:"4:15/km",hf:"155–174 bpm"},
+      {tag:"Fr",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"Sa",typ:"Z2",col:"#1D4ED8",bg:"#DBEAFE",desc:"Easy Run: 10 km @ Z2.",pace:"5:45–6:10/km",hf:"116–135 bpm"},
+      {tag:"So",typ:"LONG",col:"#1D4ED8",bg:"#DBEAFE",desc:"Langer Lauf: 18 km – 12 km @ Z2, letzte 6 km @ 4:15/km.",pace:"6:00→4:15/km",hf:"bis 172 bpm"},
+    ]
+  },
+  {
+    week:11, phase:"🔄 REGEN", focus:"Regenerationswoche",
+    days:[
+      {tag:"Mo",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"Di",typ:"Z2",col:"#1D4ED8",bg:"#DBEAFE",desc:"Easy Run: 8 km sehr locker.",pace:"6:10–6:40/km",hf:"<128 bpm"},
+      {tag:"Mi",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"Do",typ:"Z2",col:"#1D4ED8",bg:"#DBEAFE",desc:"Easy Run: 10 km + 4 × 20 Sek Steigerungen.",pace:"6:00–6:30/km",hf:"116–130 bpm"},
+      {tag:"Fr",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"Sa",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"So",typ:"LONG",col:"#1D4ED8",bg:"#DBEAFE",desc:"Langer Lauf: 14 km @ Z2.",pace:"5:55–6:25/km",hf:"116–132 bpm"},
+    ]
+  },
+  {
+    week:12, phase:"PHASE 2", focus:"4 × 2km @ 4:15/km",
+    days:[
+      {tag:"Mo",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"Di",typ:"Z2",col:"#1D4ED8",bg:"#DBEAFE",desc:"Easy Run: 10 km @ Z2.",pace:"5:45–6:10/km",hf:"116–135 bpm"},
+      {tag:"Mi",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"Do",typ:"Z4",col:"#9A3412",bg:"#FFEDD5",desc:"Intervalle: 2 km aufwärmen, 4 × 2km @ 4:15/km, 2 min Pause, 2 km auslaufen.",pace:"4:15/km",hf:"155–174 bpm"},
+      {tag:"Fr",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"Sa",typ:"Z2",col:"#1D4ED8",bg:"#DBEAFE",desc:"Easy Run: 10 km @ Z2.",pace:"5:45–6:10/km",hf:"116–135 bpm"},
+      {tag:"So",typ:"LONG",col:"#1D4ED8",bg:"#DBEAFE",desc:"Langer Lauf: 18 km – 12 km @ Z2, letzte 6 km @ 4:15/km.",pace:"6:00→4:15/km",hf:"bis 170 bpm"},
+    ]
+  },
+  {
+    week:13, phase:"PHASE 2", focus:"4 × 2km @ 4:15/km",
+    days:[
+      {tag:"Mo",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"Di",typ:"Z2",col:"#1D4ED8",bg:"#DBEAFE",desc:"Easy Run: 12 km @ Z2.",pace:"5:45–6:10/km",hf:"116–135 bpm"},
+      {tag:"Mi",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"Do",typ:"Z4",col:"#9A3412",bg:"#FFEDD5",desc:"Intervalle: 2 km aufwärmen, 4 × 2km @ 4:15/km, 90 Sek Pause, 2 km auslaufen.",pace:"4:15/km",hf:"155–174 bpm"},
+      {tag:"Fr",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"Sa",typ:"Z2",col:"#1D4ED8",bg:"#DBEAFE",desc:"Easy Run: 10 km @ Z2.",pace:"5:45–6:10/km",hf:"116–135 bpm"},
+      {tag:"So",typ:"LONG",col:"#1D4ED8",bg:"#DBEAFE",desc:"Langer Lauf: 18 km – 11 km @ Z2, letzte 7 km @ 4:15/km.",pace:"6:00→4:15/km",hf:"bis 172 bpm"},
+    ]
+  },
+  {
+    week:14, phase:"🔄 REGEN", focus:"Letzte Regeneration vor Phase 3",
+    days:[
+      {tag:"Mo",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"Di",typ:"Z2",col:"#1D4ED8",bg:"#DBEAFE",desc:"Easy Run: 8 km locker.",pace:"6:10–6:40/km",hf:"<128 bpm"},
+      {tag:"Mi",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"Do",typ:"Z2",col:"#1D4ED8",bg:"#DBEAFE",desc:"Easy Run: 10 km + 3 × 30 Sek Steigerungen.",pace:"6:00–6:30/km",hf:"116–130 bpm"},
+      {tag:"Fr",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"Sa",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"So",typ:"LONG",col:"#1D4ED8",bg:"#DBEAFE",desc:"Langer Lauf: 12 km @ Z2.",pace:"5:55–6:25/km",hf:"116–132 bpm"},
+    ]
+  },
+  {
+    week:15, phase:"PHASE 3", focus:"6 × 1km @ 4:10–4:15/km",
+    days:[
+      {tag:"Mo",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"Di",typ:"Z2",col:"#1D4ED8",bg:"#DBEAFE",desc:"Easy Run: 10 km @ Z2.",pace:"5:45–6:10/km",hf:"116–135 bpm"},
+      {tag:"Mi",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"Do",typ:"Z4",col:"#9A3412",bg:"#FFEDD5",desc:"Pace-Intervalle: 2 km aufwärmen, 6 × 1km @ 4:10–4:15/km, 75 Sek Pause, 2 km auslaufen.",pace:"4:10–4:15/km",hf:"158–174 bpm"},
+      {tag:"Fr",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"Sa",typ:"Z2",col:"#1D4ED8",bg:"#DBEAFE",desc:"Easy Run: 10 km @ Z2.",pace:"5:45–6:10/km",hf:"116–135 bpm"},
+      {tag:"So",typ:"LONG",col:"#1D4ED8",bg:"#DBEAFE",desc:"Langer Lauf: 18 km – 12 km @ Z2, letzte 6 km @ 4:15/km.",pace:"6:00→4:15/km",hf:"bis 170 bpm"},
+    ]
+  },
+  {
+    week:16, phase:"PHASE 3", focus:"7 × 1km @ 4:10/km",
+    days:[
+      {tag:"Mo",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"Di",typ:"Z2",col:"#1D4ED8",bg:"#DBEAFE",desc:"Easy Run: 10 km @ Z2.",pace:"5:40–6:05/km",hf:"116–135 bpm"},
+      {tag:"Mi",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"Do",typ:"Z4",col:"#9A3412",bg:"#FFEDD5",desc:"Pace-Intervalle: 2 km aufwärmen, 7 × 1km @ 4:10/km, 75 Sek Pause, 2 km auslaufen.",pace:"4:10/km",hf:"160–174 bpm"},
+      {tag:"Fr",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"Sa",typ:"Z2",col:"#1D4ED8",bg:"#DBEAFE",desc:"Easy Run: 10 km @ Z2.",pace:"5:40–6:05/km",hf:"116–135 bpm"},
+      {tag:"So",typ:"LONG",col:"#1D4ED8",bg:"#DBEAFE",desc:"Langer Lauf: 18 km – 10 km @ Z2, letzte 8 km @ 4:15/km.",pace:"6:00→4:15/km",hf:"bis 172 bpm"},
+    ]
+  },
+  {
+    week:17, phase:"PHASE 3", focus:"RENNSIMULATION",
+    days:[
+      {tag:"Mo",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"Di",typ:"Z2",col:"#1D4ED8",bg:"#DBEAFE",desc:"Easy Run: 10 km @ Z2.",pace:"5:40–6:05/km",hf:"116–135 bpm"},
+      {tag:"Mi",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"Do",typ:"Z3",col:"#854D0E",bg:"#FEF9C3",desc:"Tempo: 2 km aufwärmen, 2 × 15 min @ 4:25/km, 2 min Pause, 2 km auslaufen.",pace:"4:25/km",hf:"140–155 bpm"},
+      {tag:"Fr",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"Sa",typ:"Z2",col:"#1D4ED8",bg:"#DBEAFE",desc:"Easy Run: 10 km @ Z2. Frisch für Rennsimulation morgen!",pace:"5:40–6:05/km",hf:"116–135 bpm"},
+      {tag:"So",typ:"LONG",col:"#9A3412",bg:"#FFEDD5",desc:"RENNSIMULATION: 18 km – 4 km einlaufen, 10 km exakt @ 4:15/km, 4 km auslaufen.",pace:"Z2→4:15→Z2",hf:"bis 173 bpm"},
+    ]
+  },
+  {
+    week:18, phase:"PHASE 3", focus:"6 × 1km @ 4:05/km",
+    days:[
+      {tag:"Mo",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"Di",typ:"Z2",col:"#1D4ED8",bg:"#DBEAFE",desc:"Easy Run: 10 km @ Z2.",pace:"5:40–6:05/km",hf:"116–135 bpm"},
+      {tag:"Mi",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"Do",typ:"Z4",col:"#9A3412",bg:"#FFEDD5",desc:"Pace-Intervalle: 2 km aufwärmen, 6 × 1km @ 4:05/km (schnellste Einheit!), 90 Sek Pause, 2 km auslaufen.",pace:"4:05/km",hf:"165–178 bpm"},
+      {tag:"Fr",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"Sa",typ:"Z2",col:"#1D4ED8",bg:"#DBEAFE",desc:"Easy Run: 10 km @ Z2.",pace:"5:40–6:05/km",hf:"116–135 bpm"},
+      {tag:"So",typ:"LONG",col:"#1D4ED8",bg:"#DBEAFE",desc:"Langer Lauf: 16 km – 6 km @ Z2, 10 km @ 4:15/km.",pace:"Z2→4:15/km",hf:"bis 172 bpm"},
+    ]
+  },
+  {
+    week:19, phase:"⭐ TESTRENNEN", focus:"10 km Testrennen",
+    days:[
+      {tag:"Mo",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"Di",typ:"Z2",col:"#1D4ED8",bg:"#DBEAFE",desc:"Easy Run: 8 km sehr locker.",pace:"6:00–6:30/km",hf:"116–130 bpm"},
+      {tag:"Mi",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag oder leichtes Dehnen",pace:"–",hf:"–"},
+      {tag:"Do",typ:"Z4",col:"#9A3412",bg:"#FFEDD5",desc:"Aktivierung: 2 km aufwärmen, 6 × 200m @ 4:00/km, 2 km auslaufen.",pace:"4:00/km (kurz)",hf:"kurz hoch"},
+      {tag:"Fr",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"RUHETAG – schlafen, essen, Material checken",pace:"–",hf:"–"},
+      {tag:"Sa",typ:"TEST",col:"#92400E",bg:"#FFF7ED",desc:"⭐ TESTRENNEN: 10 km. Ziel: ~42:00 min. Einlaufen 1–2 km vorher!",pace:"~4:12/km",hf:"bis max"},
+      {tag:"So",typ:"Z1",col:"#065F46",bg:"#D1FAE5",desc:"Regeneration: 6–8 km sehr locker nach dem Rennen.",pace:"6:30–7:00/km",hf:"<116 bpm"},
+    ]
+  },
+  {
+    week:20, phase:"🔄 REGEN", focus:"Erholung nach Testrennen",
+    days:[
+      {tag:"Mo",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"Di",typ:"Z2",col:"#1D4ED8",bg:"#DBEAFE",desc:"Easy Run: 8 km locker.",pace:"6:10–6:40/km",hf:"116–128 bpm"},
+      {tag:"Mi",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"Do",typ:"Z2",col:"#1D4ED8",bg:"#DBEAFE",desc:"Easy Run: 8 km locker.",pace:"6:10–6:30/km",hf:"116–128 bpm"},
+      {tag:"Fr",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"Sa",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"So",typ:"LONG",col:"#1D4ED8",bg:"#DBEAFE",desc:"Langer Lauf: 10 km @ Z2.",pace:"5:55–6:25/km",hf:"116–130 bpm"},
+    ]
+  },
+  {
+    week:21, phase:"PHASE 4", focus:"Letzte harte Woche",
+    days:[
+      {tag:"Mo",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"Di",typ:"Z2",col:"#1D4ED8",bg:"#DBEAFE",desc:"Easy Run: 10 km @ Z2.",pace:"5:40–6:05/km",hf:"116–135 bpm"},
+      {tag:"Mi",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"Do",typ:"Z4",col:"#9A3412",bg:"#FFEDD5",desc:"Letzte Intervalle: 2 km aufwärmen, 5 × 1km @ 4:15/km, 90 Sek Pause, 2 km auslaufen.",pace:"4:15/km",hf:"158–174 bpm"},
+      {tag:"Fr",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"Sa",typ:"Z2",col:"#1D4ED8",bg:"#DBEAFE",desc:"Easy Run: 10 km @ Z2.",pace:"5:40–6:05/km",hf:"116–135 bpm"},
+      {tag:"So",typ:"LONG",col:"#1D4ED8",bg:"#DBEAFE",desc:"Langer Lauf: 16 km – 10 km @ Z2, 6 km @ 4:15/km. Letzter langer WP-Lauf!",pace:"Z2→4:15/km",hf:"bis 170 bpm"},
+    ]
+  },
+  {
+    week:22, phase:"PHASE 4", focus:"Tapering –25%",
+    days:[
+      {tag:"Mo",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"Di",typ:"Z2",col:"#1D4ED8",bg:"#DBEAFE",desc:"Easy Run: 8 km @ Z2.",pace:"5:40–6:05/km",hf:"116–135 bpm"},
+      {tag:"Mi",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"Do",typ:"Z4",col:"#9A3412",bg:"#FFEDD5",desc:"Kurzintervalle: 2 km aufwärmen, 4 × 1km @ 4:15/km, 90 Sek Pause, 2 km auslaufen.",pace:"4:15/km",hf:"158–174 bpm"},
+      {tag:"Fr",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"Sa",typ:"Z3",col:"#854D0E",bg:"#FEF9C3",desc:"Kurzes Tempo: 2 km auf/ab, 4 × 200m @ WP, 90 Sek Pause dazwischen.",pace:"4:15/km (kurz)",hf:"kurz Z4"},
+      {tag:"So",typ:"LONG",col:"#1D4ED8",bg:"#DBEAFE",desc:"Langer Lauf: 14 km @ Z2.",pace:"5:45–6:10/km",hf:"116–135 bpm"},
+    ]
+  },
+  {
+    week:23, phase:"PHASE 4", focus:"Tapering –50%",
+    days:[
+      {tag:"Mo",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"Di",typ:"Z2",col:"#1D4ED8",bg:"#DBEAFE",desc:"Easy Run: 6 km sehr locker.",pace:"5:50–6:20/km",hf:"116–130 bpm"},
+      {tag:"Mi",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag",pace:"–",hf:"–"},
+      {tag:"Do",typ:"Z4",col:"#9A3412",bg:"#FFEDD5",desc:"Aktivierung: 2 km aufwärmen, 3 × 1km @ 4:15/km, 2 km auslaufen.",pace:"4:15/km",hf:"158–170 bpm"},
+      {tag:"Fr",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag – schlafen, entspannen",pace:"–",hf:"–"},
+      {tag:"Sa",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"Ruhetag oder 20 min spazieren",pace:"–",hf:"–"},
+      {tag:"So",typ:"LONG",col:"#1D4ED8",bg:"#DBEAFE",desc:"Letzter langer Lauf: 10 km sehr locker @ Z2. Genießen!",pace:"5:55–6:25/km",hf:"116–130 bpm"},
+    ]
+  },
+  {
+    week:24, phase:"🏁 WETTKAMPF", focus:"HALBMARATHON",
+    days:[
+      {tag:"Mo",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"RUHETAG – schlafen, lockern, Pasta essen",pace:"–",hf:"–"},
+      {tag:"Di",typ:"Z2",col:"#1D4ED8",bg:"#DBEAFE",desc:"5 km locker + 4 × 200m @ WP. Nur Aktivierung!",pace:"locker+4:15/km",hf:"leicht"},
+      {tag:"Mi",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"RUHETAG – Material vorbereiten: Schuh, Gels, Startnummer",pace:"–",hf:"–"},
+      {tag:"Do",typ:"Z1",col:"#065F46",bg:"#D1FAE5",desc:"20 min sehr locker + 3 Steigerungen. Beine wach halten.",pace:"6:00–6:30/km",hf:"<120 bpm"},
+      {tag:"Fr",typ:"FREI",col:"#475569",bg:"#F1F5F9",desc:"RUHETAG – Kohlenhydrate aufladen. Früh schlafen!",pace:"–",hf:"–"},
+      {tag:"Sa",typ:"RACE",col:"#9F1239",bg:"#FFF1F2",desc:"🏁 HALBMARATHON! km 1–2: 4:22/km. km 3–17: 4:15/km. km 18–21: alles geben!",pace:"4:15/km → Finish",hf:"160–180+ bpm"},
+      {tag:"So",typ:"Z1",col:"#065F46",bg:"#D1FAE5",desc:"Nach dem Rennen: 15–20 min sehr locker auslaufen oder spazieren.",pace:"sehr locker",hf:"<116 bpm"},
+    ]
+  },
+];
+
+
+// ── DATA ────────────────────────────────────────────────────────────────
+const PHASES=[
+  {t:"PHASE 1 — HYBRID-AUFBAU",c:"#1D4ED8",bg:"rgba(29,78,216,.08)",d:"Z2-Basis + erste Qualitätsreize. HF schlägt Pace!",
+   w:[{n:"1",km:"38",q:"4×6 min Z3",l:"16 km Z2"},{n:"2",km:"42",q:"5×6 min Z3",l:"18 km Z2"},{n:"3",km:"45",q:"20 min Z3",l:"20 km Z2"},{n:"4 🔄",km:"30",q:"Regeneration",l:"12 km Z2"},{n:"5",km:"46",q:"25 min Z3 progressiv",l:"20 km Z2"},{n:"6",km:"48",q:"2×15 min Z3",l:"18 km Z2"}]},
+  {t:"PHASE 2 — INTENSIVIERUNG",c:"#B45309",bg:"rgba(180,83,9,.08)",d:"Z4 Intervalle. Langer Lauf mit WP-Anteilen.",
+   w:[{n:"7",km:"42",q:"5×1km @4:20",l:"18km (4km WP)"},{n:"8",km:"45",q:"5×1km @4:20",l:"18km (5km WP)"},{n:"9",km:"48",q:"6×1km @4:15",l:"18km (6km WP)"},{n:"10",km:"50",q:"6×1km @4:15",l:"18km (6km WP)"},{n:"11🔄",km:"32",q:"Regeneration",l:"14km Z2"},{n:"12",km:"48",q:"4×2km @4:15",l:"18km (6km WP)"},{n:"13",km:"50",q:"4×2km @4:15",l:"18km (7km WP)"},{n:"14🔄",km:"30",q:"Regeneration",l:"12km Z2"}]},
+  {t:"PHASE 3 — WETTKAMPFSPEZIFISCH",c:"#9A3412",bg:"rgba(154,52,18,.08)",d:"4:15/km zur zweiten Natur. Rennsimulationen.",
+   w:[{n:"15",km:"45",q:"6×1km @4:10–4:15",l:"18km (6km WP)"},{n:"16",km:"47",q:"7×1km @4:10",l:"18km (8km WP)"},{n:"17",km:"48",q:"2×15min @4:25",l:"RENNSIMULATION"},{n:"18",km:"45",q:"6×1km @4:05",l:"16km (10km WP)"},{n:"19⭐",km:"35",q:"Testrennen 10km",l:"Ziel ~42:00"},{n:"20🔄",km:"25",q:"Regeneration",l:"10km Z2"}]},
+  {t:"PHASE 4 — TAPERING",c:"#065F46",bg:"rgba(6,95,70,.08)",d:"Umfang runter, Intensität bleibt. Supercompensation!",
+   w:[{n:"21",km:"42",q:"5×1km @4:15",l:"16km (6km WP)"},{n:"22",km:"32",q:"4×200m @WP",l:"14km Z2"},{n:"23",km:"22",q:"3×1km @4:15",l:"10km locker"},{n:"24🏁",km:"12+Rennen",q:"Einlaufen",l:"WETTKAMPF"}]}
+];
+const RACE=[
+  {a:"Einlaufen",km:"km 1–3",p:"4:20–4:25/km",h:"max. 155 bpm",t:"Locker ankommen – NIE zu schnell!",c:"#3B82F6"},
+  {a:"Hauptrennen",km:"km 4–17",p:"4:15/km",h:"160–170 bpm",t:"Rhythmus halten – Automatismus",c:"#F97316"},
+  {a:"Finish",km:"km 18–21,1",p:"4:05–4:10/km",h:"175+ bpm",t:"Alles rauslassen!",c:"#EF4444"},
+];
+const INIT=[
+  {id:11,date:"2026-04-26",type:"Z2 Easy Run",distance:"12.04",pace:"6:51",avgHR:"134",rpe:"4",notes:"viele Schritte vorher, nach Essen"},
+  {id:10,date:"2026-04-24",type:"Z2 Easy Run",distance:"9.47",pace:"6:48",avgHR:"134",rpe:"2",notes:"easy"},
+  {id:9,date:"2026-04-21",type:"Z2 Easy Run",distance:"9.09",pace:"6:59",avgHR:"127",rpe:"1",notes:"super easy"},
+  {id:8,date:"2026-04-19",type:"Z2 Easy Run",distance:"17.22",pace:"6:48",avgHR:"132",rpe:"3",notes:"letzte 2km Beine schwer"},
+  {id:7,date:"2026-04-16",type:"Z3 Tempodauerlauf",distance:"8.09",pace:"5:49",avgHR:"148",rpe:"5",notes:"Tempo gut mitgegangen"},
+  {id:6,date:"2026-04-14",type:"Z2 Easy Run",distance:"11.95",pace:"7:16",avgHR:"131",rpe:"2",notes:"toll"},
+  {id:5,date:"2026-04-11",type:"Z3 Tempodauerlauf",distance:"11.74",pace:"5:58",avgHR:"151",rpe:"4",notes:"war gut"},
+  {id:4,date:"2026-04-08",type:"Z2 Easy Run",distance:"11.9",pace:"7:04",avgHR:"134",rpe:"2",notes:"easy"},
+  {id:3,date:"2026-04-06",type:"Z2 Easy Run",distance:"13.91",pace:"6:49",avgHR:"134",rpe:"3",notes:"gut"},
+  {id:2,date:"2026-04-03",type:"Z3 Tempodauerlauf",distance:"9.49",pace:"5:54",avgHR:"149",rpe:"4",notes:"angenehm"},
+  {id:1,date:"2026-03-31",type:"Z2 Easy Run",distance:"8.3",pace:"7:28",avgHR:"131",rpe:"3",notes:"sehr langsam"},
+];
+const CURRENT_WEEK = 4; // Aktuelle Woche
+
+// ── STATE ────────────────────────────────────────────────────────────────
+let runs=[], apiKey='';
+
+function init(){
+  try{const s=localStorage.getItem('hm_v3');runs=s?JSON.parse(s):INIT;}catch(e){runs=INIT;}
+  apiKey=localStorage.getItem('hm_key')||'';
+  document.getElementById('fd').value=new Date().toISOString().split('T')[0];
+  renderAll(); renderPlanWeeks(); renderPlanOverview(); renderPlanRace();
+}
+
+// ── HELPERS ──────────────────────────────────────────────────────────────
+const fd=d=>new Date(d).toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'2-digit'});
+function zone(hf){if(!hf)return'–';const h=parseInt(hf);if(h<116)return'Z1';if(h<136)return'Z2';if(h<155)return'Z3';if(h<175)return'Z4';return'Z5';}
+function tc(t){if(!t)return'#a78bfa';if(t.includes('Z1')||t.includes('Regen'))return'#4ade80';if(t.includes('Z2')||t.includes('Easy')||t.includes('Langer'))return'#60a5fa';if(t.includes('Z3')||t.includes('Tempo'))return'#fbbf24';if(t.includes('Z4')||t.includes('Interval'))return'#f97316';return'#f43f5e';}
+function pp(s){const p=(s||'').split(':');if(p.length!==2)return null;const m=parseInt(p[0]),sec=parseInt(p[1]);return(isNaN(m)||isNaN(sec))?null:m*60+sec;}
+const sv=()=>{try{localStorage.setItem('hm_v3',JSON.stringify(runs));}catch(e){}};
+
+// ── RENDER ───────────────────────────────────────────────────────────────
+function renderAll(){renderStats();renderProgress();renderList();renderApiKey();}
+
+function renderStats(){
+  const km=runs.reduce((s,r)=>s+parseFloat(r.distance||0),0);
+  const hr=runs.filter(r=>r.avgHR);
+  const avg=hr.length?Math.round(hr.reduce((s,r)=>s+parseInt(r.avgHR),0)/hr.length):'–';
+  const z2=runs.filter(r=>r.type?.includes('Z2')||r.type?.includes('Easy')).length;
+  const q=runs.filter(r=>r.type?.includes('Z3')||r.type?.includes('Z4')).length;
+  document.getElementById('sbar').innerHTML=`<div class="sv"><div class="svv">${runs.length}</div><div class="svl">EINHEITEN</div></div><div class="sv"><div class="svv">${km.toFixed(1)}</div><div class="svl">KM</div></div><div class="sv"><div class="svv">${avg}</div><div class="svl">Ø HF</div></div><div class="sv"><div class="svv">${z2}/${q}</div><div class="svl">Z2/QUAL</div></div>`;
+}
+
+function renderProgress(){
+  const z2=runs.filter(r=>r.type?.includes('Z2')||r.type?.includes('Easy')).slice().sort((a,b)=>new Date(a.date)-new Date(b.date));
+  if(z2.length<2){document.getElementById('pbanner').innerHTML='';return;}
+  const p1=pp(z2[0].pace),p2=pp(z2[z2.length-1].pace);
+  if(!p1||!p2||p1===p2)return;
+  const diff=p1-p2,imp=diff>0,abs=Math.abs(diff);
+  document.getElementById('pbanner').innerHTML=`<div class="pbanner"><span style="font-size:10px;color:var(--t3)">📈 Z2: ${z2[0].pace} → ${z2[z2.length-1].pace}/km</span><span style="font-family:Syne,sans-serif;font-size:13px;font-weight:700;color:${imp?'#4ade80':'#f44336'}">${imp?'−':'+'}${Math.floor(abs/60)}:${String(abs%60).padStart(2,'0')}/km</span></div>`;
+}
+
+function renderList(){
+  const el=document.getElementById('rlist');
+  if(!runs.length){el.innerHTML='<div class="emp"><div class="eic">📋</div><div class="etx">Noch keine Einträge.</div></div>';return;}
+  el.innerHTML=runs.map(r=>{const c=tc(r.type),z=zone(r.avgHR);return`<div class="rc" style="border-left-color:${c}"><button class="rdl" onclick="del(${r.id})">×</button><div class="rh"><span class="rd">${fd(r.date)}</span><span class="rbdg" style="background:${c}20;color:${c};border:1px solid ${c}30">${r.type}</span>${r.avgHR?`<span class="rhf">${z} · ${r.avgHR} bpm</span>`:''}</div><div class="rs"><span><span class="rl">km </span><span class="rv">${r.distance}</span></span><span><span class="rl">pace </span><span class="rp">${r.pace}/km</span></span>${r.rpe?`<span><span class="rl">rpe </span><span class="rv" style="color:#fbbf24">${r.rpe}</span></span>`:''}</div>${r.notes?`<div class="rnt">${r.notes}</div>`:''}</div>`;}).join('');
+}
+
+function saveRun(){
+  const k=document.getElementById('fk').value,p=document.getElementById('fp').value;
+  if(!k||!p){alert('Distanz+Pace pflicht!');return;}
+  runs=[{id:Date.now(),date:document.getElementById('fd').value,type:document.getElementById('ft').value,distance:k,pace:p,avgHR:document.getElementById('fh').value,rpe:document.getElementById('fr').value,notes:document.getElementById('fn').value},...runs];
+  sv();['fk','fp','fh','fr','fn'].forEach(id=>document.getElementById(id).value='');
+  const b=document.getElementById('bsv');b.textContent='✓ GESPEICHERT';b.classList.add('bsv');
+  setTimeout(()=>{b.textContent='TRAINING SPEICHERN';b.classList.remove('bsv');},2000);
+  renderAll();
+}
+function del(id){runs=runs.filter(r=>r.id!==id);sv();renderAll();}
+
+function renderApiKey(){
+  document.getElementById('apikey').innerHTML=apiKey
+    ?`<div style="display:flex;align-items:center;justify-content:space-between;background:var(--bg2);border:1px solid var(--bd);border-radius:9px;padding:9px 12px;margin-bottom:11px"><span style="font-size:11px;color:var(--gr)">✓ API Key gesetzt</span><button onclick="clearKey()" style="background:none;border:none;color:var(--t3);font-size:11px;cursor:pointer;font-family:inherit">Ändern</button></div>`
+    :`<div class="apibox"><p>Für KI-Analyse: <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a> → API Keys → Create Key.</p><div class="fg" style="margin-bottom:9px"><label>API KEY</label><input type="password" placeholder="sk-ant-..." id="aki"></div><button class="bp" onclick="saveKey()">API KEY SPEICHERN</button></div>`;
+}
+function saveKey(){const k=document.getElementById('aki')?.value?.trim();if(!k)return;apiKey=k;localStorage.setItem('hm_key',k);renderApiKey();}
+function clearKey(){apiKey='';localStorage.removeItem('hm_key');renderApiKey();}
+
+// ── AI ───────────────────────────────────────────────────────────────────
+async function startAI(){
+  go('ai');
+  if(!apiKey){document.getElementById('aicnt').innerHTML='<div class="emp"><div class="eic">🔑</div><div class="etx">Bitte erst API Key eingeben.</div></div>';return;}
+  document.getElementById('aicnt').innerHTML=`<div class="ld"><div class="ldic">⚡</div><div style="font-size:11px;color:var(--or);letter-spacing:1.5px">ANALYSIERE ${runs.length} EINHEITEN...</div></div>`;
+  const log=runs.slice(0,30).map(r=>`${fd(r.date)} | ${r.type} | ${r.distance}km | ${r.pace}/km | HF:${r.avgHR||'–'} (${zone(r.avgHR)}) | RPE:${r.rpe||'–'}${r.notes?' | '+r.notes:''}`).join('\n');
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1200,system:`Lauftrainer von Alex. Ziel: HM Sep 2026 in 1:30:00 (4:15/km). HFmax 193. VO2max 48. PB 2018: 1:37:57. Zonen: Z1<116, Z2 116-135, Z3 136-154, Z4 155-174, Z5 175-193. WICHTIG: Z3/Z4 Ø-Pace enthält Ein/Auslaufen – Kernpace 30-45 Sek/km schneller. Bewerte nach HF+RPE. Gib: 1.FORTSCHRITT 2.PROBLEME 3.ANPASSUNG 4.PROGNOSE. Direkt, Deutsch.`,messages:[{role:'user',content:`Trainingslog:\n\n${log}\n\nAnalysiere.`}]})});
+    const d=await res.json();
+    if(d.error)throw new Error(d.error.message);
+    const txt=d.content?.find(b=>b.type==='text')?.text||'Keine Antwort.';
+    document.getElementById('aicnt').innerHTML=`<div class="abox"><div style="font-size:9px;color:var(--or);letter-spacing:1.5px;margin-bottom:11px">⚡ KI-ANALYSE — ${runs.length} EINHEITEN</div><div class="atxt">${txt}</div></div><button class="bs" onclick="startAI()">ERNEUT ANALYSIEREN</button>`;
+  }catch(e){document.getElementById('aicnt').innerHTML=`<div class="abox" style="border-left-color:var(--rd)"><div class="atxt" style="color:#f87171">Fehler: ${e.message}</div></div><button class="bs" onclick="startAI()">ERNEUT VERSUCHEN</button>`;}
+}
+
+// ── PLAN ─────────────────────────────────────────────────────────────────
+function pcol(phase){
+  if(phase.includes('PHASE 1'))return'#1D4ED8';if(phase.includes('PHASE 2'))return'#B45309';
+  if(phase.includes('PHASE 3'))return'#9A3412';if(phase.includes('PHASE 4'))return'#065F46';
+  if(phase.includes('REGEN'))return'#065F46';if(phase.includes('TESTREN'))return'#92400E';
+  if(phase.includes('WETTKAMPF'))return'#9F1239';return'#1D4ED8';
+}
+
+function renderPlanWeeks(){
+  let html='';
+  ALL_WEEKS.forEach((w,i)=>{
+    const cur=w.week===CURRENT_WEEK;
+    const col=pcol(w.phase);
+    html+=`<div class="wk" id="wk${w.week}">
+      <div class="wkhdr">
+        <span class="wknum">Woche ${w.week}</span>
+        <span class="wkph" style="color:${col}">${w.phase}</span>
+        ${cur?'<span class="wkcur">AKTUELL</span>':''}
+      </div>
+      <div class="wkcard">
+        <div class="wkfoc">💡 ${w.focus}</div>
+        ${w.days.map(d=>`<div class="dr"><span class="dtag" style="color:${d.col}">${d.tag}</span><div class="dcnt"><span class="dtyp" style="background:${d.bg};color:${d.col}">${d.typ}</span><div class="ddsc">${d.desc}</div>${d.pace!=='–'?`<div class="dmet">🏃 ${d.pace} &nbsp;💓 ${d.hf}</div>`:''}</div></div>`).join('')}
+      </div>
+    </div>`;
+  });
+  document.getElementById('plan-w').innerHTML=html;
+  setTimeout(()=>{const el=document.getElementById('wk'+CURRENT_WEEK);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});},200);
+}
+
+function renderPlanOverview(){
+  document.getElementById('plan-o').innerHTML=PHASES.map(p=>`
+    <div style="border-radius:11px;overflow:hidden;margin-bottom:9px;background:${p.bg};border:1px solid ${p.c}30">
+      <div class="ph" style="background:${p.c}">${p.t}</div>
+      <div style="padding:6px 11px;font-size:10px;font-style:italic;color:var(--t2);border-bottom:1px solid rgba(255,255,255,.05)">${p.d}</div>
+      ${p.w.map(w=>`<div class="pw"><span class="pwn">Wo.${w.n}</span><span class="pwc"><b style="color:#e2e8f0">Do:</b> ${w.q}<br><b style="color:#e2e8f0">So:</b> ${w.l}</span><span class="pwk">${w.km} km</span></div>`).join('')}
+    </div>`).join('');
+}
+
+function renderPlanRace(){
+  document.getElementById('plan-r').innerHTML=`
+    <div class="stl">WETTKAMPFSTRATEGIE — 1:30:00</div>
+    <div style="background:var(--bg2);border:1px solid var(--bd);border-radius:11px;overflow:hidden;margin-bottom:11px">
+      ${RACE.map((r,i)=>`<div style="padding:11px 12px${i?';border-top:1px solid var(--bd)':''}"><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-family:Syne,sans-serif;font-weight:700;font-size:13px;color:${r.c}">${r.a}</span><span style="font-size:10px;color:var(--t3)">${r.km}</span></div><div style="display:flex;gap:12px;font-size:11px;margin-bottom:3px"><span><span style="color:var(--t4)">pace </span><b style="color:${r.c}">${r.p}</b></span><span><span style="color:var(--t4)">hf </span><b style="color:var(--t2)">${r.h}</b></span></div><div style="font-size:10px;color:var(--t3);font-style:italic">${r.t}</div></div>`).join('')}
+    </div>
+    <div class="rfc" style="border-color:rgba(249,115,22,.3)">
+      <div style="font-size:9px;color:var(--or);letter-spacing:1px;margin-bottom:7px">🔑 WICHTIGSTE REGELN</div>
+      <div style="font-size:11px;color:var(--t2);line-height:1.9">→ km 1: max. 4:22/km<br>→ HF bis km 5 unter 160 bpm<br>→ Gel nach 45 min und 80 min<br>→ Ab km 16: alles rauslassen<br>→ Keine neuen Schuhe am Renntag!</div>
+    </div>`;
+}
+
+function showPlan(tab){
+  ['w','o','r'].forEach(t=>{document.getElementById('plan-'+t).style.display=t===tab?'block':'none';document.getElementById('tg-'+t).classList.toggle('on',t===tab);});
+  if(tab==='w'){setTimeout(()=>{const el=document.getElementById('wk'+CURRENT_WEEK);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});},100);}
+}
+
+function go(tab){
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.tb').forEach(b=>b.classList.remove('on'));
+  document.getElementById('pg-'+tab).classList.add('on');
+  document.getElementById('tb-'+tab).classList.add('on');
+  document.getElementById('cnt').scrollTop=0;
+}
+
+init();
+if('serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
+</script>
+</body>
+</html>
